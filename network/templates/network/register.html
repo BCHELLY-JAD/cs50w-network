@@ -1,0 +1,41 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+    <h2 style='padding:10px; color: #0e68b3; display: flex; justify-content: center; font-family: Gill Sans; margin-top: 15px; font-size: 50px;'>Register</h2>
+
+    {% if message %}
+    <div class="alert alert-danger w-25 p-3 d-flex justify-content-center" style="margin:auto;" role="alert">
+        <div>{{ message }}</div>
+      </div>
+        
+    {% endif %}
+
+
+
+    <form action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+        
+        <div style="display: flex; justify-content: center; padding: 8px; margin-top: 10px;">
+            <input id="focus" style='width:500px; height: 40px; border-radius: 8px; border: none; outline: none;' autofocus type="text" autofocus class="form-control" name="username" placeholder="Username" required>
+        </div>
+        <div style="display: flex; justify-content: center; padding: 8px;">
+            <input id="focus" id="focus" style='width:500px; height: 40px; border-radius: 8px; border: none; outline: none;' type="email" name="email" autofocus class="form-control" placeholder="Email Address" required>
+        </div>
+        <div  style="display: flex; justify-content: center; padding: 8px;">
+            <input id="focus" style='width:500px; height: 40px; border-radius: 8px; border: none; outline: none;' type="password" name="password"  autofocus class="form-control" placeholder="Password" required>
+        </div>
+        <div  style="display: flex; justify-content: center; padding: 8px;">
+            <input id="focus" style='width:500px; height: 40px; border-radius: 8px; border: none; outline: none;' type="password" name="confirmation" autofocus class="form-control" placeholder="Confirm Password" required>
+        </div>
+        <div style='text-align:center; padding-top: 0px; margin-top: 0px;'>Already have an account? <a href="{% url 'login' %}">Log In here.</a></div>
+
+        <div style='text-align:center;'><input style=' width:400px; margin-top:10px; border-radius: 15px;' class="btn btn-primary" type="submit" value="Register"></div>
+        
+    </form>
+
+
+
+  
+
+{% endblock %}

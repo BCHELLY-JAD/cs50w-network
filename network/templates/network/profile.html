@@ -1,0 +1,108 @@
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+
+
+<div id="heading">
+    <div id="username">{{ person.0.post_owner }}</div>
+    <div id="status">
+        <div id="followers">Followers:<h5 class="followers_count">{{followers_num}}</h5> </div>
+        <div id="following">Following:<h5 class="following_count">{{following_num}}</h5></div>
+    </div> 
+    
+    {% if request.user.is_authenticated %}
+     {% if request.user != person.0.post_owner %}
+      {% if request.user in person.0.post_owner.followers.all %}
+
+
+              <a href="{% url 'follow' person.0.post_owner.id %}" role="button" class="btn btn-outline-primary mb-2" id="follow">Unfollow</a>
+
+                  {% else %}
+
+            <a href="{% url 'follow' person.0.post_owner.id %}" role="button" class="btn btn-outline-primary mb-2" id="follow">Follow</a>
+
+                      {% endif %}
+              {% endif %}
+    {% endif %}
+</div>
+
+{% for post in person %}
+
+
+<div class="show_post" id="show-{{post.id}}"> 
+      
+  <div class="top" id="top-{{post.id}}">
+    <div id="creator">
+      <a href="{% url 'profile' post.post_owner.id %}">{{ post.post_owner }}</a>
+     </div> 
+  <div>{% if request.user == post.post_owner %}
+   <div class='edit-button stylingbtn' id="edit-{{post.id}}">Edit Post</div> 
+   {% endif %}
+ </div>
+  </div>
+
+  <div class="content" id="content-{{post.id}}"> {{ post.post_content }}</div>
+  
+  <div class="bottom">
+    {% if request.user.is_authenticated %}
+    <i data-id="{{post.id}}" id="heart-{{post.id}}" aria-hidden="true" class='far fa-heart like_button'></i>
+    {% endif %}
+    <h6 id="count-{{post.id}}" class="like_count">{{ post.likes_count }}</h6>
+    <div id="time"> {{ post.timestamp }}</div></div>
+
+ </div>
+
+
+
+{% endfor %}
+
+
+<nav aria-label="..."  class="d-flex justify-content-center">
+    <ul class="pagination"> 
+    
+      {% if person.has_previous %}
+     <li class="page-item">
+      <a href="?page=1"></a> 
+      <span class="page-link"><a href="?page={{ person.previous_page_number }}">Previous</span>
+        </li>
+    
+      {% endif %}
+    
+    
+        {% for num in person.paginator.page_range %}
+          {% if person.number == num %}
+          <li class="page-item active" aria-current="page">
+          <a class="page-link">{{ num }}</a>
+          </li>
+    
+       {% else %}
+       
+       <a class="page-link">{{ num }}</a>
+    
+          {% endif %}
+        {% endfor %}
+    
+    
+        {% if person.has_next %}
+        <li class="page-item">
+        <a href="?page={{ person.next_page_number }}"></a>
+        <a href="?page={{ person.paginator.num_pages }}"><span class="page-link">Next</span></a>
+        </li>
+        {% endif %}
+    
+    </ul>
+      </nav> 
+
+
+  
+{% endblock %}
+
+
+{% block script %}
+<script> var csrftoken = '{{ csrf_token }}';</script>
+<script src="{% static 'network/inbox.js'%}"></script>
+{% endblock %}
+

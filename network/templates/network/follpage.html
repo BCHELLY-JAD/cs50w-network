@@ -1,0 +1,86 @@
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block body %} 
+
+
+
+ <h1 style='padding:10px; color: #0e68b3; display: flex; justify-content: center; font-family: Gill Sans; margin-top: 15px; font-size: 50px;'>Following</h1> 
+
+
+
+
+    {% for foll in follposts %}
+
+
+    <div class="show_post" id="show-{{post.id}}">
+      
+      <div class="top" id="top-{{post.id}}">
+        <div id="creator">
+          <a href="{% url 'profile' foll.post_owner.id %}">{{ foll.post_owner }}</a>
+         </div> 
+      <!-- <div>{% if request.user == foll.post_owner %}
+       <div class='edit_button' data-id="textarea-{{foll.id}}"  id="text-{{post.id}}">Edit Post</div> 
+       {% endif %}
+     </div> -->
+      </div>
+  
+      <div class="content" id="content-{{post.id}}"> {{ foll.post_content }}</div>
+ 
+      <div class="bottom">
+        <i data-id="{{foll.id}}" id="heart-{{post.id}}" aria-hidden="true" class='far fa-heart like_button'></i>
+       <h6 id="count-{{foll.id}}" class="like_count">{{ foll.likes_count }}</h6>
+        <div id="time"> {{ foll.timestamp }}</div></div>
+ 
+     </div>
+  
+ {% endfor %}
+
+
+
+
+<nav aria-label="..."  style="margin-left:35%;">
+  <ul class="pagination"> 
+  
+    {% if follposts.has_previous %}
+   <li class="page-item">
+    <a href="?page=1"></a> 
+    <span class="page-link"><a href="?page={{ follposts.previous_page_number }}">Previous</span>
+      </li>
+  
+    {% endif %} 
+  
+  
+      {% for num in follposts.paginator.page_range %}
+        {% if follposts.number == num %}
+        <li class="page-item active" aria-current="page">
+        <a class="page-link">{{ num }}</a>
+        </li>
+  
+     {% else %}
+     
+     <a class="page-link">{{ num }}</a>
+  
+        {% endif %}
+      {% endfor %}
+  
+  
+      {% if follposts.has_next %}
+      <li class="page-item">
+      <a href="?page={{ follposts.next_page_number }}"></a>
+      <a href="?page={{ follposts.paginator.num_pages }}"><span class="page-link">Next</span></a>
+      </li>
+      {% endif %}
+  
+  </ul>
+    </nav> 
+
+{% endblock %}
+
+{% block script %}
+
+<script> var csrftoken = '{{ csrf_token }}';</script>
+<script src="{% static 'network/inbox.js'%}"></script>
+
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block body %} 
+
+
+
+ <h1 style='padding:10px; color: #0e68b3; display: flex; justify-content: center; font-family: Gill Sans; margin-top: 15px; font-size: 50px;'>All Posts</h1> 
+ <form action="{% url 'index' %}" method="POST"> 
+  {% csrf_token %}
+{% if user.is_authenticated %}
+  <div id="intro">What's on your mind? </div>
+  <textarea id="type" style="resize: none" name='post_content'  class="news" placeholder="Type here..."></textarea>
+  <div style='margin-left:1000px; margin-top:0px;'><input id="submit" style=' width:140px; font-size: 18px;  border-radius: 15px;'  class="btn btn-primary" type="submit" value="Connect"></div>
+  {% endif %}
+</form>
+
+
+
+
+    {% for post in posts %}
+
+   
+    <div class="show_post" id="show-{{post.id}}"> 
+      
+     <div class="top" id="top-{{post.id}}">
+       <div id="creator">
+         <a href="{% url 'profile' post.post_owner.id %}">{{ post.post_owner }}</a>
+        </div> 
+     <div>{% if request.user == post.post_owner %}
+      <div class='edit-button stylingbtn' id="edit-{{post.id}}">Edit Post</div> <div style="display:none;" class="stylingbtn makeme" id="save-{{post.id}}" onclick="save(event)">Save</div>
+      {% endif %}
+    </div>
+     </div>
+ 
+     <div class="content" id="content-{{post.id}}"> {{ post.post_content }}</div>
+
+
+     <div class="bottom">
+      {% if request.user.is_authenticated %}
+      <i data-id="{{post.id}}" id="heart-{{post.id}}" aria-hidden="true" class='far fa-heart like_button'></i>
+      {% endif %}
+      <h6 id="count-{{post.id}}" class="like_count">{{ post.likes_count }}</h6>
+       <div id="time"> {{ post.timestamp }}</div></div>
+
+    </div>
+  
+ {% endfor %}
+
+
+
+<nav aria-label="..."  style="margin-left:35%;">
+  <ul class="pagination"> 
+  
+    {% if posts.has_previous %}
+   <li class="page-item">
+    <a href="?page=1"></a> 
+    <span class="page-link"><a href="?page={{ posts.previous_page_number }}">Previous</span>
+      </li>
+  
+    {% endif %}
+  
+  
+      {% for num in posts.paginator.page_range %}
+        {% if posts.number == num %}
+        <li class="page-item active" aria-current="page">
+        <a class="page-link">{{ num }}</a>
+        </li>
+  
+     {% else %}
+     
+     <a class="page-link">{{ num }}</a>
+  
+        {% endif %}
+      {% endfor %}
+  
+  
+      {% if posts.has_next %}
+      <li class="page-item">
+      <a href="?page={{ posts.next_page_number }}"></a>
+      <a href="?page={{ posts.paginator.num_pages }}"><span class="page-link">Next</span></a>
+      </li>
+      {% endif %}
+  
+  </ul>
+    </nav> 
+
+  
+{% endblock %}
+
+{% block script %}
+
+<script> var csrftoken = '{{ csrf_token }}';</script>
+<script src="{% static 'network/inbox.js'%}"></script>
+
+{% endblock %}
+
+
+
+
+
